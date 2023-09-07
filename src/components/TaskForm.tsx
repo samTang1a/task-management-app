@@ -1,7 +1,8 @@
 
-import { useState, ChangeEvent } from 'react'
+import { useState, ChangeEvent, FormEvent } from 'react'
 import { useForm, SubmitHandler } from "react-hook-form"
 import { z } from "zod";
+import categories from '../categories';
 
 const TaskFormSchema = z.object({
 	id: z.number(),
@@ -19,23 +20,26 @@ type TaskFormData = {
 }
 
 // TaskFormSchema.parse({})
+interface TaskFormProps {
+	onSubmit: (TaskFormData: FormEvent<HTMLFormElement>) => void
+}
 
-export default function TaskForm() {
-	const {
-		register,
-		handleSubmit,
-		reset,
-		formState: { errors },
-	} = useForm<TaskFormData>()
+export default function TaskForm(prop: TaskFormProps) {
+	const { register, handleSubmit, reset, formState: { errors }} = useForm<TaskFormData>()
 
-
-
-	const onSubmit: SubmitHandler<TaskFormData> = (data) => console.log(data)
-
+	// const handleFormSubmit: SubmitHandler<TaskFormData> = (data: TaskFormData) => {
+	// 	onSubmit(data)
+	// 	reset()
+	// };
+	const onSubmit: SubmitHandler<TaskFormData> = data => {
+		z.number().safe(data.id);
+		z.date().safeParse(data.dueDate);
+		
+	}
 
 	return (
 		<>
-			<form>
+			<form onSubmit={handleSubmit(onSubmit)}>
 				<div className="mb-3">
 					<label htmlFor="input-title" className="form-label">Title</label>
 					<input type="text" className="form-control" id="input-title" />
@@ -48,10 +52,7 @@ export default function TaskForm() {
 					{/* <input type="checkbox" className="form-check-input" id="exampleCheck1" /> */}
 					<label className="form-check-label" htmlFor="input-category">Check me out</label>
 					<select className="form-select" aria-label="Default select example">
-						<option selected>Open this select menu</option>
-						<option value="1">One</option>
-						<option value="2">Two</option>
-						<option value="3">Three</option>
+						{categories.map(categorie => <option value={categorie}>categorie</option>)}
 					</select>
 				</div>
 				<button type="submit" className="btn btn-primary">Submit</button>
