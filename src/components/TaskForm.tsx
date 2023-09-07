@@ -10,7 +10,7 @@ const TaskFormSchema = z.object({
 	dueDate: z.date(),
 	category: z.string()
 	// category: zincludes()
-}).strict();
+}).strict().required();
 
 type TaskFormData = {
 	id: number;
@@ -32,33 +32,29 @@ export default function TaskForm(prop: TaskFormProps) {
 	// 	reset()
 	// };
 	const onSubmit: SubmitHandler<TaskFormData> = data => {
-		z.number().safe(data.id);
-		z.date().safeParse(data.dueDate);
-		
+		console.log(TaskFormSchema.parse(data))
+		return TaskFormSchema.parse(data)
 	}
 
 	return (
 		<>
 			<form onSubmit={handleSubmit(onSubmit)}>
-				<div className="mb-3">
-					<label htmlFor="input-title" className="form-label">Title</label>
-					<input type="text" className="form-control" id="input-title" />
-				</div>
-				<div className="mb-3">
-					<label htmlFor="input-due-date" className="form-label">Due Date</label>
-					<input type="date" className="form-control" id="iput-due-date" />
-				</div>
-				<div className="mb-3">
-					{/* <input type="checkbox" className="form-check-input" id="exampleCheck1" /> */}
-					<label className="form-check-label" htmlFor="input-category">Check me out</label>
-					<select className="form-select" aria-label="Default select example">
-						{categories.map(categorie => <option value={categorie}>categorie</option>)}
-					</select>
-				</div>
-				<button type="submit" className="btn btn-primary">Submit</button>
-			</form>
+				<label>Title</label>
+				<input {...register('title', { required: true, maxLength: 50})}/>
+				<p>{errors.title?.message}</p>
 
+				<label>Due Date</label>
+				<input {...register('dueDate', { required: true})}/>
+				<p>{errors.dueDate?.message}</p>
+
+				<label>Category</label>
+				<select {...register('category')}>
+					{categories.map(category => <option value={category}>{category}</option>)}
+				</select>
+				<p>{errors.category?.message}</p>
+
+				<input type="submit" />
+			</form>
 		</>
 	)
-
 }

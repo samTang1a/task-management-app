@@ -1,7 +1,11 @@
 
+interface TaskFilterProps {
+    onSelectCategory: (category: string) => void
+}
+
+export default function TaskFilter(prop: TaskFilterProps) {
 
 
-export default function TaskFilter() {
 
 
 
