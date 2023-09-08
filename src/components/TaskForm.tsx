@@ -21,7 +21,9 @@ type TaskFormData = {
 
 // TaskFormSchema.parse({})
 interface TaskFormProps {
-	onSubmit: (TaskFormData: FormEvent<HTMLFormElement>) => void
+	onSubmit: (data: TaskFormData) => void
+	// onSubmit: (TaskFormData: SubmitHandler<TaskFormData>) => void
+
 }
 
 export default function TaskForm(prop: TaskFormProps) {
@@ -33,7 +35,8 @@ export default function TaskForm(prop: TaskFormProps) {
 	// };
 	const onSubmit: SubmitHandler<TaskFormData> = data => {
 		console.log(TaskFormSchema.parse(data))
-		return TaskFormSchema.parse(data)
+		TaskFormSchema.parse(data)
+		reset()
 	}
 
 	return (
