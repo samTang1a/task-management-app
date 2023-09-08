@@ -3,6 +3,7 @@ import { useState, ChangeEvent, FormEvent } from 'react'
 import { useForm, SubmitHandler } from "react-hook-form"
 import { z } from "zod";
 import categories from '../categories';
+import Task from '../Task'
 
 const TaskFormSchema = z.object({
 	id: z.number(),
@@ -13,7 +14,6 @@ const TaskFormSchema = z.object({
 }).strict().required();
 
 type TaskFormData = {
-	id: number;
 	title: string;
 	dueDate: Date;
 	category: string;
@@ -21,19 +21,19 @@ type TaskFormData = {
 
 // TaskFormSchema.parse({})
 interface TaskFormProps {
-	onSubmit: (data: TaskFormData) => void
+	onSubmit: (data: Task) => void
 	// onSubmit: (TaskFormData: SubmitHandler<TaskFormData>) => void
-
 }
 
 export default function TaskForm(prop: TaskFormProps) {
-	const { register, handleSubmit, reset, formState: { errors }} = useForm<TaskFormData>()
+	const { register, handleSubmit, reset, formState: { errors }} = useForm<Task>()
 
 	// const handleFormSubmit: SubmitHandler<TaskFormData> = (data: TaskFormData) => {
 	// 	onSubmit(data)
 	// 	reset()
 	// };
-	const onSubmit: SubmitHandler<TaskFormData> = data => {
+	const onSubmit: SubmitHandler<Task> = data => {
+		// add data.id = 
 		console.log(TaskFormSchema.parse(data))
 		TaskFormSchema.parse(data)
 		reset()

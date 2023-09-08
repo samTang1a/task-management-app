@@ -12,27 +12,24 @@ export default function App() {
 	const handleAddTask = (newTask: Task) => {
 		// let tmp = tasks.push(task)
 		const id = tasks.length + 1;
-    newTask.id = id;
+		newTask.id = id;
 		setTasks([...tasks, newTask])
 	}
 
 	const handleDeleteTask = (id: number) => {
-    const updatedTasks = tasks.filter((task) => task.id !== id);
+		const updatedTasks = tasks.filter((task) => task.id !== id);
 		setTasks(updatedTasks)
 	}
 
 
-	let onSumbit = (TaskFormData: FormEvent<HTMLFormElement>) => {
-
-	}
-
+	// let onSumbit = (TaskFormData: FormEvent<HTMLFormElement>) => {
+	// }
 
 	return (
 		<>
-			<TaskForm onSubmit={handleAddTask}> </TaskForm>
+			<TaskForm onSubmit={handleAddTask}></TaskForm>
 			<TaskList tasks={tasks} onDelete={handleDeleteTask}></TaskList>
 		</>
 	)
-
 
 }
