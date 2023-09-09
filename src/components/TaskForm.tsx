@@ -1,41 +1,24 @@
 
-import { useState, ChangeEvent, FormEvent } from 'react'
 import { useForm, SubmitHandler } from "react-hook-form"
 import { z } from "zod";
 import categories from '../categories';
 import Task from '../Task'
 
 const TaskFormSchema = z.object({
-	id: z.number(),
 	title: z.string().min(3).max(50),
 	dueDate: z.date(),
 	category: z.string()
-	// category: zincludes()
 }).strict().required();
 
-type TaskFormData = {
-	title: string;
-	dueDate: Date;
-	category: string;
-}
-
-// TaskFormSchema.parse({})
 interface TaskFormProps {
-	onSubmit: (data: Task) => void
-	// onSubmit: (TaskFormData: SubmitHandler<TaskFormData>) => void
+	handleAddTask: (data: Task) => void
 }
 
 export default function TaskForm(prop: TaskFormProps) {
-	const { register, handleSubmit, reset, formState: { errors }} = useForm<Task>()
-
-	// const handleFormSubmit: SubmitHandler<TaskFormData> = (data: TaskFormData) => {
-	// 	onSubmit(data)
-	// 	reset()
-	// };
+	const { register, handleSubmit, reset, formState: { errors } } = useForm<Task>()
 	const onSubmit: SubmitHandler<Task> = data => {
-		// add data.id = 
-		console.log(TaskFormSchema.parse(data))
 		TaskFormSchema.parse(data)
+		prop.handleAddTask(data)
 		reset()
 	}
 
@@ -43,20 +26,25 @@ export default function TaskForm(prop: TaskFormProps) {
 		<>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<label>Title</label>
-				<input {...register('title', { required: true, maxLength: 50})}/>
-				<p>{errors.title?.message}</p>
+				<input type="text" className="form-control" {...register('title',
+					{
+						required: { value: true, message: 'Title should be at least 3 characters.' },
+						minLength: { value: 3, message: 'Title should be at least 3 characters.' },
+						maxLength: { value: 50, message: 'This input exceed 50.' }
+					})} />
+				<p style={{ color: "red" }}>{errors.title?.message}</p>
 
 				<label>Due Date</label>
-				<input {...register('dueDate', { required: true})}/>
-				<p>{errors.dueDate?.message}</p>
+				<input type="date" className="form-control" {...register('dueDate', { valueAsDate: true, required: true })} />
+				<p style={{ color: "red" }}>{errors.dueDate?.type ? 'Invalid date' : null}</p>
 
 				<label>Category</label>
-				<select {...register('category')}>
-					{categories.map(category => <option value={category}>{category}</option>)}
+				<select defaultValue='default' className="form-control" {...register('category')}>
+					<option key={'default'} disabled value='default'></option>
+					{categories.map((category, index) => <option key={index} value={category}>{category}</option>)}
 				</select>
-				<p>{errors.category?.message}</p>
-
-				<input type="submit" />
+				<p style={{ color: "red" }}>{errors.category?.type ? 'Category is required.': null}</p>
+				<input type="submit" className="btn btn-primary" />
 			</form>
 		</>
 	)
